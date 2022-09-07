@@ -8,11 +8,26 @@ function App() {
   const [posts, setPosts] = useState([]);
   const [error, setError] = useState("");
   //Using promises
+  // useEffect(() => {
+  //   axios
+  //     .get("https://jsonplaceholder.typicode.com/posts")
+  //     .then((res) => setPosts(res.data))
+  //     .catch((err) => setError(err.message));
+  // }, []);
+
+  //using async/await
+
+  const getApiData = async () => {
+    try {
+      const res = await axios.get("https://jsonplaceholder.typicode.com/posts");
+      setPosts(res.data);
+    } catch (e) {
+      setError(e.message);
+    }
+  };
+
   useEffect(() => {
-    axios
-      .get("https://jsonplaceholder.typicode.com/posts")
-      .then((res) => setPosts(res.data))
-      .catch((err) => setError(err.message));
+    getApiData();
   }, []);
 
   return (
@@ -21,12 +36,12 @@ function App() {
       <div className="error">{error ? error : null}</div>
       {/* {error !== "" && <h2>{error}</h2>} */}
       <div className="grid">
-        {posts.map((post) => {
+        {posts.slice(0, 12).map((post) => {
           const { id, title, body } = post;
           return (
             <div key={id} className="card">
               <h1>{title.slice(0, 15).toUpperCase()}</h1>
-              <p>{body.slice(0, 100)}</p>
+              <p>{body}</p>
             </div>
           );
         })}
